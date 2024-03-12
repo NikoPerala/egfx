@@ -10,13 +10,22 @@ void eFillCanvas(eCanvas *c, uint32_t color){
 eCanvas eGetCanvas(int width, int height, uint32_t color)
 {
   eCanvas canvas;
-  canvas.width = width;
-  canvas.height = height;
-  canvas.size = width * height;
-  canvas.pixels = malloc(sizeof(uint32_t) * canvas.size);
-  eFillCanvas(&canvas, color);
-
+  eInitializeCanvas(&canvas, width, height, color);
   return canvas;
+}
+
+
+uint8_t eInitializeCanvas(eCanvas *canvas, int width, int height, uint32_t color)
+{
+  canvas->width = width;
+  canvas->height = height;
+  canvas->size = width * height;
+  canvas->pixels = malloc(sizeof(uint32_t) * canvas->size);
+  if (canvas->pixels == NULL) return 1;
+
+  eFillCanvas(canvas, color);
+
+  return 0;
 }
 
 void eWriteCanvasToPpm(eCanvas *c, const char *filepath)

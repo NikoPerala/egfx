@@ -17,6 +17,7 @@ typedef struct eCanvas {
 
 void eFillCanvas(eCanvas *c, uint32_t color);
 eCanvas eGetCanvas(int width, int height, uint32_t color);
+uint8_t eInitializeCanvas(eCanvas *canvas, int width, int height, uint32_t color);
 void eWriteCanvasToPpm(eCanvas *c, const char *filepath);
 void eFreeCanvas(eCanvas *c);
 void eDrawLineHorizontal(eCanvas c, int x1, int x2, int y, uint32_t color);
