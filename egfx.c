@@ -60,7 +60,7 @@ void eFreeCanvas(eCanvas *c){
 }
 
 
-void eDrawLineHorizontal(eCanvas c, int x1, int x2, int y, uint32_t color)
+void eDrawLineHorizontal(eCanvas *c, int x1, int x2, int y, uint32_t color)
 {
   int i;
   int length = x2 - x1;
@@ -73,11 +73,11 @@ void eDrawLineHorizontal(eCanvas c, int x1, int x2, int y, uint32_t color)
   }
 
   for (i = x1; i < x2; ++i){
-    c.pixels[y * c.width + i] = color;
+    c->pixels[y * c->width + i] = color;
   }
 }
 
-void eDrawRectangle(eCanvas c, int ox, int oy, int w, int h, uint32_t color)
+void eDrawRectangle(eCanvas *c, int ox, int oy, int w, int h, uint32_t color)
 {
   int y;
 
@@ -86,7 +86,7 @@ void eDrawRectangle(eCanvas c, int ox, int oy, int w, int h, uint32_t color)
   }
 }
 
-void eDrawCircle(eCanvas c, int ox, int oy, int r, uint32_t color)
+void eDrawCircle(eCanvas *c, int ox, int oy, int r, uint32_t color)
 {
     int min_x = ox - r;
     int max_x = ox + r;
@@ -100,14 +100,14 @@ void eDrawCircle(eCanvas c, int ox, int oy, int r, uint32_t color)
             int cx = x - ox;
             int cy = y - oy;
             if (cx * cx + cy * cy <= r * r){
-                if (y < 0 || y >= c.height || x < 0 || x >= c.width) continue;
-                c.pixels[y * c.width + x] = color;
+                if (y < 0 || y >= c->height || x < 0 || x >= c->width) continue;
+                c->pixels[y * c->width + x] = color;
             }
         }
     }
 }
 
-void eDrawCircleBorder(eCanvas c, int ox, int oy, int r, int t, uint32_t color)
+void eDrawCircleBorder(eCanvas *c, int ox, int oy, int r, int t, uint32_t color)
 {
 
     int min_x = ox - r;
@@ -122,14 +122,14 @@ void eDrawCircleBorder(eCanvas c, int ox, int oy, int r, int t, uint32_t color)
             int sdy = (y - oy) * (y - oy);
             if (sdx + sdy <= r * r
              && sdx + sdy > (r - t) * (r - t)){
-                if (y < 0 || y >= c.height || x < 0 || x >= c.width) continue;
-                c.pixels[y * c.width + x] = color;
+                if (y < 0 || y >= c->height || x < 0 || x >= c->width) continue;
+                c->pixels[y * c->width + x] = color;
             }
         }
     }
 }
 
-void eInvertCircleBorder(eCanvas c, int ox, int oy, int r, int t)
+void eInvertCircleBorder(eCanvas *c, int ox, int oy, int r, int t)
 {
 
     int min_x = ox - r;
@@ -144,14 +144,20 @@ void eInvertCircleBorder(eCanvas c, int ox, int oy, int r, int t)
             int sdy = (y - oy) * (y - oy);
             if (sdx + sdy <= r * r
              && sdx + sdy > (r - t) * (r - t)){
-                if (y < 0 || y >= c.height || x < 0 || x >= c.width) continue;
+                if (y < 0 || y >= c->height || x < 0 || x >= c->width) continue;
                 eInvertPixel(c, x, y);
             }
         }
     }
 }
 
-void ePlotLineLow(eCanvas c, int x1, int y1, int x2, int y2, uint32_t color)
+/*
+ *
+ *
+ */
+
+
+void ePlotLineLow(eCanvas *c, int x1, int y1, int x2, int y2, uint32_t color)
 {
     int x;
 
@@ -166,7 +172,7 @@ void ePlotLineLow(eCanvas c, int x1, int y1, int x2, int y2, uint32_t color)
     int y = y1;
 
     for (x = x1; x <= x2; ++x){
-        c.pixels[y * c.width + x] = color;
+        c->pixels[y * c->width + x] = color;
         if (D > 0){
             y += yi;
             D += (2 * (dy - dx));
@@ -176,7 +182,7 @@ void ePlotLineLow(eCanvas c, int x1, int y1, int x2, int y2, uint32_t color)
     }
 }
 
-void ePlotLineHigh(eCanvas c, int x1, int y1, int x2, int y2, uint32_t color)
+void ePlotLineHigh(eCanvas *c, int x1, int y1, int x2, int y2, uint32_t color)
 {
     int y;
     int16_t dx = x2 - x1;
@@ -190,7 +196,7 @@ void ePlotLineHigh(eCanvas c, int x1, int y1, int x2, int y2, uint32_t color)
     int x = x1;
 
     for (y = y1; y <= y2; ++y){
-        c.pixels[y * c.width + x] = color;
+        c->pixels[y * c->width + x] = color;
         if (D > 0){
             x += xi;
             D += (2 * (dx - dy));
@@ -201,7 +207,7 @@ void ePlotLineHigh(eCanvas c, int x1, int y1, int x2, int y2, uint32_t color)
 }
 
 
-void eDrawLine(eCanvas c, int x1, int y1, int x2, int y2, uint32_t color)
+void eDrawLine(eCanvas *c, int x1, int y1, int x2, int y2, uint32_t color)
 {
     int16_t dx = x2 - x1;
     int16_t dy = y2 - y1;
@@ -215,7 +221,7 @@ void eDrawLine(eCanvas c, int x1, int y1, int x2, int y2, uint32_t color)
     }
 }
 
-void eFillBottomFlatTriangle(eCanvas c,
+void eFillBottomFlatTriangle(eCanvas *c,
                             int x1, int y1,
                             int x2, int y2,
                             int x3, int y3,
@@ -236,7 +242,7 @@ void eFillBottomFlatTriangle(eCanvas c,
     }
 }
 
-void eFillTopFlatTriangle(eCanvas c,
+void eFillTopFlatTriangle(eCanvas *c,
                          int x1, int y1,
                          int x2, int y2,
                          int x3, int y3,
@@ -256,7 +262,7 @@ void eFillTopFlatTriangle(eCanvas c,
     }
 }
 
-void eDrawTriangle(eCanvas c,
+void eDrawTriangle(eCanvas *c,
                   int x1, int y1,
                   int x2, int y2,
                   int x3, int y3,
@@ -302,19 +308,19 @@ void eDrawTriangle(eCanvas c,
     }
 }
 
-void eInvertRectangle(eCanvas c, int ox, int oy, int w, int h)
+void eInvertRectangle(eCanvas *c, int ox, int oy, int w, int h)
 {
   int x, y, cPos;
 
   for (y = oy; y < oy + h; ++y){
     for (x = ox; x < ox + w; ++x){
-      cPos = y * c.width + x;
-      c.pixels[cPos] = 0xffffff ^ c.pixels[cPos];
+      cPos = y * c->width + x;
+      c->pixels[cPos] = 0xffffff ^ c->pixels[cPos];
     }
   }
 }
 
-void eInvertCircle(eCanvas c, int ox, int oy, int r)
+void eInvertCircle(eCanvas *c, int ox, int oy, int r)
 {
     int min_x = ox - r;
     int max_x = ox + r;
@@ -328,8 +334,8 @@ void eInvertCircle(eCanvas c, int ox, int oy, int r)
             int cx = x - ox;
             int cy = y - oy;
             if (cx * cx + cy * cy <= r * r){
-                if (y < 0 || y >= c.height || x < 0 || x >= c.width) continue;
-                c.pixels[y * c.width + x] ^= 0xffffff;
+                if (y < 0 || y >= c->height || x < 0 || x >= c->width) continue;
+                c->pixels[y * c->width + x] ^= 0xffffff;
             }
         }
     }
@@ -362,8 +368,51 @@ uint32_t eLerpColor(uint32_t c1, uint32_t c2, float pos)
     return ret;
 }
 
-void eInvertPixel(eCanvas c, int x, int y){
-    int pos = y * c.width + x;
-    c.pixels[pos] ^= 0xffffff;
+void eInvertPixel(eCanvas *c, int x, int y){
+    int pos = y * c->width + x;
+    c->pixels[pos] ^= 0xffffff;
+}
+
+void eFillPolygon(eCanvas *c, V2 *points, int point_amount, uint32_t color) {
+    if (point_amount < 3) {
+        return;
+    }
+
+    int min_y = points[0].y;
+    int max_y = points[0].y;
+    for (int i = 1; i < point_amount; i++) {
+        if (points[i].y < min_y) {
+            min_y = points[i].y;
+        }
+        if (points[i].y > max_y) {
+            max_y = points[i].y;
+        }
+    }
+
+    for (int y = min_y; y <= max_y; y++) {
+        int intersections[point_amount];
+        int num_intersections = 0;
+
+        for (int i = 0; i < point_amount; i++) {
+            int j = (i + 1) % point_amount; // Next point
+            if ((points[i].y < y && points[j].y >= y) || (points[j].y < y && points[i].y >= y)) {
+                intersections[num_intersections++] = points[i].x + (double)(y - points[i].y) / (points[j].y - points[i].y) * (points[j].x - points[i].x);
+            }
+        }
+
+        for (int i = 0; i < num_intersections - 1; i++) {
+            for (int j = 0; j < num_intersections - i - 1; j++) {
+                if (intersections[j] > intersections[j + 1]) {
+                    int temp = intersections[j];
+                    intersections[j] = intersections[j + 1];
+                    intersections[j + 1] = temp;
+                }
+            }
+        }
+
+        for (int i = 0; i < num_intersections; i += 2) {
+            eDrawLine(c, intersections[i], y, intersections[i + 1], y, color);
+        }
+    }
 }
 
